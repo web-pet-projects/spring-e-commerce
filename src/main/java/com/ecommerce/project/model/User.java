@@ -43,12 +43,7 @@ public class User {
     private Set<Role> roles = new HashSet<>();
 
     // TODO: Change to OneToMany with orphanRemoval
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-    @JoinTable(
-            name = "users_addresses",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "address_id")
-    )
+    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
     private Set<Address> addresses = new HashSet<>();
 
     @OneToMany(mappedBy = "seller")

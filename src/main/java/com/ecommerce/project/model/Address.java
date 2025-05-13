@@ -1,9 +1,12 @@
 package com.ecommerce.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -14,7 +17,8 @@ import lombok.NoArgsConstructor;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long addressId;
+    @Column(name = "address_id")
+    private Long id;
 
     @Size(min = 5)
     private String buildingName;
@@ -22,15 +26,20 @@ public class Address {
     @Size(min = 5)
     private String city;
 
-    @Size(min = 5)
+    @NotBlank
     private String country;
 
-    @Size(min = 5)
+    @NotBlank
     private String pinCode;
 
-    @Size(min = 5)
     private String state;
 
-    @Size(min = 5)
+    @NotBlank
     private String street;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private User user;
+
 }

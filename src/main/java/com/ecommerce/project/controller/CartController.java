@@ -15,7 +15,6 @@ import java.util.List;
 @RequestMapping("/api")
 @AllArgsConstructor(onConstructor_ = {@Autowired})
 public class CartController {
-
     private CartService cartService;
 
     @PostMapping("/carts/products/{productId}/quantity/{quantity}")
