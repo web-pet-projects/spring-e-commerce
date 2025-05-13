@@ -4,10 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -56,4 +53,8 @@ public class User {
 
     @OneToMany(mappedBy = "seller")
     private Set<Product> products = new HashSet<>();
+
+    @OneToOne(mappedBy = "user")
+    @ToString.Exclude
+    private Cart cart;
 }

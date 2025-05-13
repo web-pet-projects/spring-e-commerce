@@ -1,19 +1,21 @@
 package com.ecommerce.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "products")
 public class Product {
     @Id
@@ -21,18 +23,22 @@ public class Product {
     private Long productId;
 
     @NotBlank(message = "{global.name.blank}")
-    @Size(min = 3, max = 50, message="{product.name.size}")
+    @Size(min = 3, message="{product.name.size}")
+    @NonNull
     private String productName;
     private String description;
     private String image;
 
     @PositiveOrZero
+    @NonNull
     private Double discount;
 
     @PositiveOrZero
+    @NonNull
     private Integer quantity;
 
     @PositiveOrZero
+    @NonNull
     private Double price;
 
     @PositiveOrZero
@@ -41,12 +47,17 @@ public class Product {
     @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @NonNull
     private Category category;
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "seller_id")
     private User seller;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();
 
     @PrePersist
     @PreUpdate

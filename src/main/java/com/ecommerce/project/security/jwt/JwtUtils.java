@@ -28,7 +28,7 @@ public class JwtUtils {
     private String jwtSecret;
 
     @Value("${spring.app.jwtExpirationMs}")
-    private int jwtExpirationInMs;
+    private Long jwtExpirationInMs;
 
     @Value("${spring.app.jwtCookie}")
     private String jwtCookie;
@@ -77,7 +77,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(new Date())
-                .expiration(new Date(new Date().getTime() + jwtExpirationInMs))
+                .expiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
                 .signWith(key())
                 .compact();
     }

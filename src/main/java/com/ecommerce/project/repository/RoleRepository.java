@@ -1,4 +1,4 @@
-package com.ecommerce.project.repositories;
+package com.ecommerce.project.repository;
 
 import com.ecommerce.project.model.AppRole;
 import com.ecommerce.project.model.Role;

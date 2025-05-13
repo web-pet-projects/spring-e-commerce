@@ -1,42 +1,46 @@
 package com.ecommerce.project.service;
 
-import com.ecommerce.project.exceptions.APIException;
-import com.ecommerce.project.exceptions.ResourceNotFoundException;
+import com.ecommerce.project.config.AppOperation;
+import com.ecommerce.project.event.ProductUpdateEvent;
+import com.ecommerce.project.exception.APIException;
+import com.ecommerce.project.exception.ResourceNotFoundException;
+import com.ecommerce.project.model.Cart;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
 import com.ecommerce.project.payload.ProductDTO;
 import com.ecommerce.project.payload.ProductResponse;
-import com.ecommerce.project.repositories.CategoryRepository;
-import com.ecommerce.project.repositories.ProductRepository;
+import com.ecommerce.project.repository.CartRepository;
+import com.ecommerce.project.repository.CategoryRepository;
+import com.ecommerce.project.repository.ProductRepository;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final CartService cartService;
     private final ModelMapper modelMapper;
     private final FileService fileService;
+    private final ApplicationEventPublisher eventPublisher;
     @Value("${project.images}")
     private String imageDir;
 
-    @Autowired
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ModelMapper modelMapper, FileService fileService) {
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.modelMapper = modelMapper;
-        this.fileService = fileService;
-    }
     @Override
     public ProductDTO createProduct(Long categoryId, ProductDTO productDTO) {
         Category category = categoryRepository.findById(categoryId)
@@ -56,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category);
         product.setSpecialPrice(specialPrice);
         Product savedProduct = productRepository.save(product);
+
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
@@ -132,6 +137,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
@@ -140,19 +146,29 @@ public class ProductServiceImpl implements ProductService {
         modelMapper.map(productDTO, product);
         product.setCategory(category);
         product.setProductId(productId);
+        product.setSpecialPrice(productDTO.getPrice() * (1 - productDTO.getDiscount() * 0.01));
         Product savedProduct = productRepository.save(product);
+        eventPublisher.publishEvent(new ProductUpdateEvent(this, savedProduct, AppOperation.UPDATE));
+
+//        cartService.updateProductInCarts(savedProduct.getProductId());
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
     @Override
+    @Transactional
     public ProductDTO removeProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
+
+        cartService.removeProductFromCarts(productId);
+        // Save this line for later use of Soft Delete
+//        eventPublisher.publishEvent(new ProductUpdateEvent(this, product, AppOperation.REMOVE));
         productRepository.delete(product);
         return modelMapper.map(product, ProductDTO.class);
     }
 
     @Override
+    @Transactional
     public ProductDTO updateImage(Long productId, MultipartFile image) {
         try {
             Product product = productRepository.findById(productId)

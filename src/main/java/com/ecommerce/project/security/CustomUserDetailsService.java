@@ -1,7 +1,7 @@
 package com.ecommerce.project.security;
 
 import com.ecommerce.project.model.User;
-import com.ecommerce.project.repositories.UserRepository;
+import com.ecommerce.project.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

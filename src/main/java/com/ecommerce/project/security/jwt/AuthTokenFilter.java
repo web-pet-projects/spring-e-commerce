@@ -1,5 +1,6 @@
 package com.ecommerce.project.security.jwt;
 
+import com.ecommerce.project.security.CustomUserDetails;
 import com.ecommerce.project.security.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,6 +36,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 String username = jwtUtils.getUsernameFromToken(token);
                 if (username != null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
                     Authentication authentication = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);

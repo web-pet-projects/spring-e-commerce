@@ -1,6 +1,6 @@
 package com.ecommerce.project.service;
 
-import com.ecommerce.project.exceptions.APIException;
+import com.ecommerce.project.exception.APIException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
