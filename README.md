@@ -1,20 +1,20 @@
 # 🛒 Spring Boot E-Commerce Backend
 
 ## 📌 Overview
-This is a production-ready e-commerce backend built with **Spring Boot 3**, following clean architecture principles. It handles core features such as product management, user carts, checkout, and order placement.
+This is a production-grade backend for an e-commerce application built using **Spring Boot 3**. It manages essential features like product catalogs, cart functionality, and order processing with a modern architecture.
 
-The project is fully integrated with:
-- **JPA (Hibernate)** for ORM
-- **MySQL/PostgreSQL** for persistence
-- **Swagger (Springdoc OpenAPI)** for API documentation
-- **Stripe**-ready structure for future payment gateway integration
+Key technologies integrated:
+- ✅ **Spring Boot** for rapid development
+- ✅ **JPA (Hibernate)** for database ORM
+- ✅ **MySQL/PostgreSQL** for persistence
+- ✅ **Swagger UI** for API documentation and testing
+- ✅ **Stripe-ready payment architecture** — server generates payment intent, while **client finalizes payment** securely
 
 > 🔗 **Inspired by:** [EmbarkX Spring Boot Course - sb-ecom](https://github.com/EmbarkXOfficial/spring-boot-course/tree/main/sb-ecom)
 
 ---
 
 ## 📚 Table of Contents
-
 1. [Getting Started](#getting-started)
 2. [API Documentation](#api-documentation)
 3. [Main Features](#main-features)
@@ -29,14 +29,14 @@ The project is fully integrated with:
 ### ✅ Prerequisites:
 - Java 17+
 - Maven
-- MySQL/PostgreSQL (local or containerized)
+- MySQL or PostgreSQL running locally or via Docker
 
 ### 📦 Run Locally
 ```bash
 mvn spring-boot:run
 ```
 
-OR package the app:
+Or package it:
 ```bash
 mvn clean install
 java -jar target/spring-ecom.jar
@@ -46,7 +46,7 @@ java -jar target/spring-ecom.jar
 
 ## 🔍 API Documentation
 
-You can explore all REST APIs:
+Test all REST endpoints directly:
 - Swagger UI: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 - OpenAPI Spec: [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 
@@ -55,64 +55,67 @@ You can explore all REST APIs:
 ## ✨ Main Features
 
 - ✅ **Product Module**
-    - CRUD operations with category linkage
-    - Image upload support
+  - Create, read, update, delete (CRUD)
+  - Category linkage & image uploads
 
-- ✅ **User Cart**
-    - Add, update, remove items
-    - Cart auto-syncs with product updates
+- ✅ **Cart Module**
+  - Add/update/delete items
+  - Automatically adjusts when products are updated or removed
 
 - ✅ **Order Module**
-    - Checkout from cart
-    - Payment details stored (Stripe-ready)
-    - Inventory automatically updated
+  - Place order from user cart
+  - OrderItems, payment info, and inventory updates
+
+- ✅ **Stripe Payment Integration (Server-Side)**
+  - Spring Boot creates Stripe PaymentIntent
+  - Returns `client_secret` to frontend
+  - **Client completes payment using Stripe Elements**
 
 - ✅ **Address Management**
-    - Users can add/manage addresses
+  - Store and use shipping addresses during checkout
 
 - ✅ **Validation & Error Handling**
-    - Global exception handler with clear messages
-    - DTO validation using annotations
+  - Input-level validation on DTOs
+  - Centralized error responses using `@RestControllerAdvice`
 
-- ✅ **Swagger UI**
-    - Test all endpoints easily
+- ✅ **Swagger Documentation**
+  - Built-in Swagger UI with auto-generated OpenAPI docs
 
 ---
 
 ## 🗂️ Project Structure
 ```
 com.ecommerce.project
-├── config            # OpenAPI, CORS, etc.
-├── controller        # REST endpoints
-├── dto / payload     # Request/Response models
-├── event             # Event-based cart sync logic
-├── exception         # Custom exceptions
-├── model             # Entities: Product, Order, Cart, etc.
-├── repository        # JPA repositories
+├── config            # Swagger, CORS, etc.
+├── controller        # REST APIs
+├── dto / payload     # Request/response DTOs
+├── event             # Domain events (e.g., cart updates on product changes)
+├── exception         # Custom exception classes
+├── model             # JPA entities
+├── repository        # Spring Data JPA interfaces
 ├── service           # Business logic
-├── util              # Helper classes (e.g. AuthUtils)
+├── util              # Helpers/utilities
 ```
 
 ---
 
 ## ⚠️ Limitations
 
-- ❌ Stripe payment is **not integrated**, only placeholders exist
-- ❌ Admin panel not implemented
-- ❌ No email notifications for order confirmations
-- ❌ Unit and integration tests not fully written yet
+- ❌ Stripe payments are **only server-prepared**, frontend must complete payment via client-side Stripe SDK
+- ❌ No admin panel or CMS features
+- ❌ No email or SMS notifications
+- ❌ Testing coverage (unit + integration) is still minimal
 
 ---
 
 ## 🔮 Future Improvements
 
-- 💳 Fully integrate Stripe and/or PayPal payments
-- 🛎️ Notification system for order and shipment
-- 🧪 Add JUnit tests with MockMvc for key endpoints
-- 📦 Dockerize the backend and connect to PostgreSQL container
+- 💳 Full Stripe + webhook integration
+- 🛎️ Email notifications on successful orders
+- 🔐 Add Spring Security + JWT for role-based auth
+- 📦 Dockerized backend + docker-compose support
+- 🧪 JUnit + MockMvc tests with CI/CD setup
 
 ---
 
-> Built with ❤️ using Spring Boot
-
-
+> Built with ❤️ using Spring Boot & Stripe
