@@ -37,7 +37,7 @@ public class Address {
     @NotBlank
     private String street;
 
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;

@@ -12,6 +12,8 @@ Key technologies integrated:
 
 > 🔗 **Inspired by:** [EmbarkX Spring Boot Course - sb-ecom](https://github.com/EmbarkXOfficial/spring-boot-course/tree/main/sb-ecom)
 
+**Schema**
+![ecommerce-erd.png](ecommerce-erd.png)
 ---
 
 ## 📚 Table of Contents
@@ -76,7 +78,6 @@ Test all REST endpoints directly:
 
 - ✅ **Validation & Error Handling**
   - Input-level validation on DTOs
-  - Centralized error responses using `@RestControllerAdvice`
 
 - ✅ **Swagger Documentation**
   - Built-in Swagger UI with auto-generated OpenAPI docs
@@ -105,6 +106,7 @@ com.ecommerce.project
 - ❌ No admin panel or CMS features
 - ❌ No email or SMS notifications
 - ❌ Testing coverage (unit + integration) is still minimal
+- ❌ Centralized error responses using `@RestControllerAdvice`
 
 ---
 

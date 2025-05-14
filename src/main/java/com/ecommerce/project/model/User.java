@@ -43,8 +43,7 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    // TODO: Change to OneToMany with orphanRemoval
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
     private Set<Address> addresses = new HashSet<>();
 
     @OneToMany(mappedBy = "seller")
