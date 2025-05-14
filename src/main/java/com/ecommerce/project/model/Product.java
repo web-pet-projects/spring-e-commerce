@@ -9,7 +9,9 @@ import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -58,6 +60,10 @@ public class Product {
     @ToString.Exclude
     @OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "product", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    private Set<OrderItem> orderItems = new HashSet<>();
 
     @PrePersist
     @PreUpdate

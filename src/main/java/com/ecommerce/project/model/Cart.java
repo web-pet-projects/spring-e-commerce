@@ -23,7 +23,7 @@ public class Cart {
 
     private Double totalPrice = 0.0;
 
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE }, orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private User user;
 

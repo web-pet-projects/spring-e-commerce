@@ -130,15 +130,12 @@ public class CartServiceImpl implements CartService {
         int updatedQuantity = cartItem.getQuantity() + quantityToUpdate;
         Product product = cartItem.getProduct();
 
-        if (product.getQuantity() <= 0) {
+        if (product.getQuantity() < 0) {
             throw new APIException("Product is not available");
         }
-
         if (updatedQuantity == 0) {
-            String message = removeProductFromCart(productId);
-            throw new APIException(message);
+            return removeProductFromCart(productId, cart.getCartId());
         }
-
         if (updatedQuantity < 0) {
             throw new APIException("Quantity is too small");
         }
@@ -158,20 +155,17 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public String removeProductFromCart(Long productId) {
-        String email = authUtils.loggedInEmail();
-
-        Cart cart = cartRepository.findByUserEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Cart", "user email", email));
-
-        CartItem cartItem = cartItemRepository.findByCartCartIdAndProductProductId(cart.getCartId(), productId)
+    public CartDTO removeProductFromCart(Long productId, Long cartId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart", "id", cartId));
+        CartItem cartItem = cartItemRepository.findByCartCartIdAndProductProductId(cartId, productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
 
         cart.setTotalPrice(cart.getTotalPrice() - cartItem.getPrice());
         cart.getCartItems().remove(cartItem);
 
         cartRepository.save(cart);
-        return "Product " + productId + " is removed from cart";
+        return modelMapper.map(cart, CartDTO.class);
     }
 
     @Override

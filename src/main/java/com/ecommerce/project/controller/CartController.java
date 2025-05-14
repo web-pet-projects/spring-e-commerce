@@ -3,7 +3,9 @@ package com.ecommerce.project.controller;
 import com.ecommerce.project.payload.CartDTO;
 import com.ecommerce.project.security.response.MessageResponse;
 import com.ecommerce.project.service.CartService;
+import com.ecommerce.project.utils.AuthUtils;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +15,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@AllArgsConstructor(onConstructor_ = {@Autowired})
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class CartController {
-    private CartService cartService;
+    private final CartService cartService;
+    private final AuthUtils authUtils;
 
     @PostMapping("/carts/products/{productId}/quantity/{quantity}")
     public ResponseEntity<CartDTO> addProductToCart(@PathVariable Long productId,
@@ -43,9 +46,11 @@ public class CartController {
         return new ResponseEntity<>(cartDTO, HttpStatus.OK);
     }
 
-    @DeleteMapping("/carts/products/{productId}")
-    public ResponseEntity<MessageResponse> deleteProductFromCart(@PathVariable Long productId) {
-        String message = cartService.removeProductFromCart(productId);
-        return new ResponseEntity<>(new MessageResponse(message), HttpStatus.OK);
+    @DeleteMapping("/carts/{cartId}/products/{productId}")
+    public ResponseEntity<CartDTO> deleteProductFromCart(@PathVariable Long cartId,
+                                                         @PathVariable Long productId) {
+
+        CartDTO cartDTO = cartService.removeProductFromCart(productId, cartId);
+        return new ResponseEntity<>(cartDTO, HttpStatus.OK);
     }
 }

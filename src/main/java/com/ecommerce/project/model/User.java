@@ -1,5 +1,6 @@
 package com.ecommerce.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -51,5 +52,6 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Cart cart;
 }
